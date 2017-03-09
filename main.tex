@@ -488,6 +488,34 @@ of selector names.
 	  guarantee recognition of spurious and real counterexamples nor progress of the
 	  refinement.
 
+
+	\section{Efficient Algorithms for Automata}
+
+	So far described methods for shape analysis based on automata theory heavily
+	relies on the efficiency of operations used for automata manipulation.
+	Unlike in the other fields of computer science, formal verification methods
+	work mainly with nondeterministic automata which provide more concise representation
+	of the analysed/verified systems.
+	A naive implementation of the crucial operations such language inclusion or equivalence checking
+	would lead to the explicit determinisation of an automaton which may cause an exponentional
+	blow up of the number of the automaton states.
+	Therefore heuristic techniques preventing the expliciti determinization were introduced \cite{ac:2006, bouchi2013, tacas10}.
+	Since language inclusion is EXPTIME complete it is not possible to implement a general efficient
+	algoritmh but the mentioned heuristic works well for many verification tasks.
+
+	Another important factor for verification is size of the automaton.
+	We would like to work with a minimal automaton which would increase
+	efficiency of the verification procedure.
+	Unfortunatelly, the textbook approach is consists of determinisation of
+	automaton followed by minimization based on Myhill-Nerode theorem.
+	Therefore the simulation relation-based techniques are used for reduction
+	of automata states.
+	It relies on computation of simulation relation over the states of an automaton
+	and then pruning out the states which are simulated by another states.
+	The simulation relation can be computed in poylnomial time \cite{ilie:nfa, fosc95}.
+	It basically says that if one state is simulated by another state the all string (or trees)
+	accepted from the first state can be also accepted form the second state.
+
 	\section{Work on Graph Automata}
 
 	The generality of a verification method for shape analysis crucially depends on the choice
@@ -575,102 +603,137 @@ of selector names.
 
 \chapter{Goals of the Thesis}
 \label{ch:goals}
-	The following section summarizes goals of this thesis and provides their brief description.
-	The general goals is to improve the state-of-the-art of shape analysis.
-	We will develop the particular methods to achieve the goal which may yield a new
-	contributions also to the other fields than shape analysis.
+	The following section summarizes goals of the proposed thesis and provides their brief description.
+	The goal is to improve the state of the art of shape analysis.
+	Moreover, some of the proposed methods that we intended to develop to achieve this goal
+	may yield new contributions to other fields than shape analysis as well.
 
-	There are the three main sub-goals and each of them should be fulfilled during the work on the thesis, however
-	the directions and goals of the research may change according to the actual development in the field.
+	Currently, we see three main sub-goals of the main goal.
+	Each of subgoals should be fulfilled during the work on the thesis, however,
+	the directions and goals of the research may change to some degree according
+	to the actual development in the field.
 
 	\section{Refinement of Abstraction over Forest Automata}
-	Forest automata are used for representation of tree decomposition of (certain class of) graphs.
+	Forest automata are used for representing sets of (certain class of) graphs
+	using their tree decomposition.
 	A formal description of forest automata will be provided in Chapter \ref{ch:vmcai}.
-	An abstraction over the forest automata is performed during the verification procedure
-	to overapproximate set of reachable heap configurations and to represent infinite state spaces.
-	The abstraction also accelerates verification procedure.
-	On the other hand, the overapproximation lead to a detection of spurious counterexamples,
-	i.e., the counterexamples not presented in a system under verification.
+	An abstraction based on abstract regular model checking over forest automata
+	is performed during the verification procedure to overapproximate the set of reachable
+	heap configurations.
+	The abstraction also accelerates the verification procedure.
+	On the other hand, the overapproximation may lead to the spurious counterexamples,
+	i.e., counterexamples not present in the system under verification.
 
-	Reporting found bugs in a program is possible only when the counterexample is validated.
-	Therefore one of the goals is to design so called \emph{backward run} which is a method
-	for distinguishing between real and spurious counterexamples.
-	Once a found counterexample is spurious it is necessary to refine the abstraction
+	Reporting bugs found in a program in a reliable way is possible only when the counterexample is validated.
+	Therefore one of the sub-goals of the thesis is to enable a program to be executed backwards
+	(without abstraction) over the possible counterexample to distinguish between real
+	and spurious counterexamples.
+	Once a found counterexample is spurious, it is necessary to refine the abstraction
 	(i.e. to make it more precise) and restart the analysis again.
 	A lack of refinement causes inability to analyse all programs where a spurious counterexample is detected
 	using a default abstraction.
-	Therefore another goal of this thesis is to design refinement of abstraction for forest automata based shape
-	analysis.
+	Therefore another sub-goal of this thesis is to design a refinement of the abstraction
+	used in forest-automata-based shape	analysis.
 
-	The principle of validation of the found counterexamples together with the refinement
-	of abstraction for forest automata will be based on CEGAR \cite{CEGAR} and will
-	be inspired of the application of the CEGAR to ARTMC.
-	However, it will be still needed to design the new features for forest automata
-	such as predicate language abstraction or automata intersection to fulfill this goal.
+	In fact, this sub-goal has already been fullfilled and published in \cite{holik:2017}
+	and will be described deeply in Chapter \ref{ch:vmcai}.
+	The approach is based on CEGAR \cite{CEGAR} and will be inspired of the application of the CEGAR to ARTMC.
 	
-	As follows from the previous text, these goals should enable a reliable reporting of the found bugs
+	As follows from the previous text, this approach enabled a reliable reporting of the found bugs
 	to an user for forest automata based shape analysis.
-	It will also make possible to verify data structures with more sophisticated properties (based on
+	It also made possible to verify data structures with more sophisticated properties (based on
 	relations between the nodes) requiring a more precise abstraction to capture the property.
 
-	\section{Graph Automata on Graphs with Bounded Tree Width}
-	Although forest automata can represent a certain class of graphs (more precisely described in the
-	following chapter) there are data structures (such as B+ tree) which would need more
-	general formalism to express them properly.
-	This work will address it by designing a new kind of automata which will work over graphs with
-	bounded tree width.
+	\section{Efficient Algorithms for Tree Automata}
+	\label{section:autoalgs}
+	Although we want to design a new kind of automata as a part of this work,
+	many existing approaches (e.g. abstract regular tree model checking based on forest automata)
+	relies on tree automata.
+	Therefore efficient algorithms for automata manipulation are needed.
+	In this work, we will focus on the efficiency needed in formal verification based on automata.
+	The needed efficient operations are, as in the case of graph automata,
+	language inclusion checking, reduction of automata states, or product of two automata.
+	
+	For example, the inclusion operation is EXPTIME-complete complexity class
+	which means that no efficient algorithm exists in general.
+	A naive algorithm for this operations would lead to an implicit determinisation
+	of the checked automata which would cause an exponential grow of the number of states.
+	Fortunately, different heuristic approaches based on
+	antichains \cite{ac:2006}, simulations \cite{henzinger:1995}, or their combinations \cite{tacas10}
+	were proposed to avoid the state explosion in many practical cases.
 
-	The generality will not be the only advantage of the new automata.
+	The goal of this thesis is to design new and to improve the existing
+	algorithms for (not only) the mentioned operations.
+	An improvement in the efficiency could help to deal with the state explosion and bring
+	the existing methods based on tree automata to analysis of more complex software.
+
+	Particulary, we will focuse on generalization of computation of congruence closure used
+	in language inclusion checking \cite{bonchi2013} to tree automata.
+	We expect that it could improve a performance of language inclusion checking for tree automata
+	in the same manner as it helped for classical word automata in \cite{bonchi2013}.
+	We implemented the congruence approach for word automata in the VATA library \cite{libvata}
+	(a highly efficient library	for automata manipulation) so we have practical
+	experiences with this algorithm which we can further employ for the generalization to trees.
+
+	We will also aim to development of the new techniques for symbolic automata.
+	There is currently intesinve research in this field and we suppose
+	that symbolic automata can also found an application in the field of shape analysis.
+	As the starting point, we began a development (in cooperation with one bachelor student)
+	of a library for symbolic automata.
+	The main goal of the library is to provide a platform for easy prototyping of the new algorithms
+	for symbolic automata.
+
+
+	\section{Automata on Graphs with Bounded Tree Width}
+	Although forest automata can represent a certain class of graphs (more precisely described in the
+	following chapter), there are data structures (such as B+ trees) which need a more
+	general formalism to express them properly.
+	Within this sub-goal, we will address this need by designing a new kind of automata
+	which will work over graphs with bounded tree width.
+
+	The generality should not be the only advantage of the new automata.
 	Their design should also benefit from the lessons learnt during the work on forest automata.
 	Forest automata have bottlenecks leading to their clumsy manipulation, e.g.,
-	they are not closed under union so one has to work with a set of forest automata instead
-	of one wrapping automata.
-	A concept of hierarchical forest automata (forest automata having another forest automata as symbols)
-	may be theoretically tempting but it leads to inelegant and spaghetti implementation.
-	It makes modelling of the quite straightforward practical operations (such as the C function \emph{memset})
-	cumbersome and not easy to design and implement for hierarchical forest automata.
+	they are not closed under union, so one has to work with a set of forest automata instead
+	of one wrapping automaton.
+	A concept of hierarchical forest automata (forest automata having other forest automata as symbols)
+	may be theoretically tempting but it leads to not elegant and spaghetti implementation of
+	the various needed operations over the automata.
+	For example, an implementation of many of the automata transformers corresponding to the concrete C
+	statements (such as the C function \emph{memset}) becomes quite cumbersome and not easy to design
+	and implement for hierarchical forest automata.
 
-	Therefore new automata should address the both problems.
-	They should be theoretically elegant having decidable important properties (e.g., language inclusion),
+	The new automata should address both of the problems.
+	They should be theoretically elegant, having decidable important properties (e.g., language inclusion),
 	and be closed under important operations such as union or intersection.
 	We will keep the automata design simple to make their implementation straightforward.
-	The abstraction of heap will not be higher than necessary
-	(i.e., abstraction only for sake of theory as it is usual in the field of formal methods)
+	The abstraction of the heap will not be stronger than necessary
 	to make modelling of practical operations semantics easy.
 
-	Although the mentioned properties will the implementation of the new automata easier
-	the main scientific contribution of the thesis will
-	focus on efficient algorithms for the automata.
+	Although the mentioned implementation aspects are important for the practical applications
+	the main scientific contribution of the thesis will focus on efficient algorithms for the automata.
 	The automata for accepting graphs introduced so far were mainly used for
 	the theoretical purposes as it was described in the chapter on the related work.
 	An interest put into an exploration of efficient heuristics and algorithms
 	for their manipulation is not so high.
-	The goal of this work is to change the current state and design the new automata
-	together with the efficient algorithms for their manipulation.
-	The algorithms will include, for example, an efficient inclusion checking, or automata reduction.
+	The goal of this work is to change the current state and propose a new class of automata
+	together with efficient algorithms for their manipulation.
+	The algorithms will include, for example, efficient inclusion checking or automata reduction.
 	The efficiency should make an application of graph automata to shape analysis computationally feasible.
 
-	\section{Efficient Algorithms for Tree Automata}
-	Although we want to design a new kind of automata as a part of this work,
-	many existing approaches (e.g. abstract regular tree model checking or forest automata)
-	relies on tree automata.
-	Therefore efficient algorithms for automata manipulation are needed.
-	In this work, we will focus on the efficiency needed in formal verification application
-	of automata. The needed efficient operations are, as in the case of graph automata,
-	language inclusion checking, reduction of automata states, or product of two automata.
+	We will build on the work of \cite{iosif2013, iosif2014} where the automata on
+	graphs with bounded tree width are used in a decision procedure for separation logic.
+	The automata defined in these works are basically tree automata with symbols encoding
+	how they go through a processed graph.
+	A symbol contains the tags used to denote which nodes have been
+	already processed and which nodes of an accepted spanning tree are the same node in the original graph.
+	Using this encoding, automata accept all possible spanning trees of the graphs represented by their languages.
 	
-	For example, the inclusion operation is in the PSPACE complexity class
-	which means that no efficient algorithm exists.
-	A naive algorithm for this operations would lead to an implicit determinisation
-	of the checked automata which would cause an exponential grow of state number.
-	Fortunately, the different heuristic approaches based on
-	antichains \cite{ac:2006}, simulations \cite{henzinger:1995}, or their combinations \cite{tacas10}
-	were proposed to avoid a state explosion in many practical cases.
-
-	The goal of this thesis is to design new and to improve existing
-	algorithms for (not only) the mentioned operations.
-	An improvement in the efficiency could help to deal with state explosion and bring
-	the existing methods based on tree automata to analysis of more complex software.
+	We will use the same approach for our new automata.
+	The paths through a graph will be encoded in symbols.
+	However, although the symbols will have the inner semantics it should not effect manipulation with automata.
+	Therefore the complexity of operations with automata will be the same as for classical tree automata
+	and we will use the existing heuristics for the crutcial operations such as language inclusion.
 
 \chapter{Pushing the Frontiers of Shape Analysis with Forest Automata}
 \label{ch:vmcai}
@@ -3791,36 +3854,36 @@ individual ones as the symbolic representation of sets of heaps.
 \label{ch:conclusion}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-This report defined the following goals of the thesis:
+The goal of this thesis is to enhance the existing techniques for shape analysis to
+enable verification of more complex software.
+Particulary, we aim to developemnt the following advancement:
 	  \begin{enumerate*}[label=(\alph*)]
-		\item design counterexample validation and predicate language abstraction
-			with refinement for forest automata,
-		\item design automata for accepting graphs with bounded tree width,
+		\item design techniques for counterexample validation and refinement
+			of predicate language abstraction over forest automata,
+		\item design new automata for accepting graphs with bounded tree width,
 		\item design new efficient algorithms for (tree) automata manipulation.
 	  \end{enumerate*}
-The report also provided with the description of the related work containing
-the state-of-the-art techniques in the shape analysis.
+The report also provided a description of the related work containing
+the state of the art techniques in the scope of the mentioned goals.
 
-Since the first goals has been already achieved the more detailed
+Since the first goals has already been achieved, a more detailed
 description was given based on the paper \cite{holik:2017}.
-
-The authors are not afraid of an experimental evaluation providing
-a hard and clear evaluation of the developed methods.
-Therefore the Forester tool implementing forest automata based shaped
-analysis participated in the last three editions of SV-COMP \cite{www:svcomp}
-in the memory safety related categories.
-Although the tool has not won any category it successfully solved the hard
-test cases such the skip-lists of the second and the third level, or verification
-of data structures with properties which have not been soundly verified by
+The results achieved in \cite{forester12} haven been implemented (in several years)
+in the Forester tool and helps in participation in the last three editions
+of SV-COMP \cite{www:svcomp} in the memory safety related categories.
+Although the tool has not won any category, it successfully solved the hard
+test cases such as the skip-lists of the second and the third level, or verification
+of data structures with properties which have not been soundly and automatically verified by
 any other tool.
 There are three publications related to the Forester participations in the competition
 co-authored by the author of this thesis \cite{tacas15, tacas16, tacas17}.
 
-The remaining work consists of the second and the third goal.
-The work on the second goals is currently in process and the first
+The remaining work of the proposed thesis consists of the second and the third sub-goal.
+The work on the second goal is currently in process and the first
 results should be ready during the following year.
-Then the rest of challenges in shape analysis will be solved and
-the field will be finally closed by my dissertation.
+As it was mentioned in Section \ref{section:autoalgs} the work on the third
+sub-goal started as a development of a library for easy prototyping
+of algorithms for symbolic automata.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{splncs03}
