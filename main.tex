@@ -116,7 +116,7 @@ The report also contains a discussion of a related work and plans of the future 
 \pagenumbering{arabic}
 \chapter{Introduction}
 
-One of eternal quests of computer science is to achieve software of
+One of eternal quests of computer science is to achieve
 as high quality of software as possible.
 This goal can be found in different parts of the field\,---\,
 from critical software in e.g. aircraft industry where even formal correctness
@@ -183,8 +183,8 @@ The automata based approaches combines expressiveness, flexibility, and efficien
 The generality of automata theory leads to expressiveness strong enough to represent most of the practically
 used data structures. Moreover, since the automata theory is well-established, we can build on the existing
 results about expressiveness and complexity of various automata variations.
-A reasoning about infinite systems is also possible thanks to the abstraction techniques for automata.
-The flexibility comes also from the automata abstractions techniques used that are not in advance fixed for a particular
+A reasoning about infinite systems is possible thanks to the abstraction techniques for automata.
+The flexibility comes also from the used automata abstractions techniques that are not in advance fixed for a particular
 class of data structures.
 The abstraction can learn a suitable way of representing a given structure automatically for many useful cases.
 The efficiency comes from many algorithmic heuristics developed to deal with the state explosion
@@ -211,7 +211,8 @@ This section provides a summary of the state-of-the-art methods for shape analys
 First, an overview of the chosen methods for analysis of programs with
 dynamic data structures is given.
 We will describe the most successful methods and those based on automata.
-Then refinement techniques for abstraction over various formalisms are summarized.
+Then refinement techniques for abstraction over various formalisms are summarized
+followed by a brief description of efficient algorithms for automata manipulation.
 Finally, an existing work on automata for graph languages is presented.
 
 \section{Shape Analysis}
@@ -221,14 +222,14 @@ underlying formalisms, such as logics
 \cite{pale97,Sagiv02,InvaderCAV08,thor10,dragoi:atva12,sleek13}, automata
 \cite{bhrv06b,deg06,forester12,boxes13,lists-counters}, graphs with summary nodes and edges
 \cite{sas07:chang_rival_necula,dudka13}, or graph grammars \cite{juggrnaut10}.
-Apart from the underlying formalisms, the approaches differ in their degree of
-automation, in the heap structures they can handle, and in their scalability.
+% Apart from the underlying formalisms, the approaches differ in their degree of
+% automation, in the heap structures they can handle, and in their scalability.
 
 In the following text, we abstract data structures allocated on heap to graphs (so called \emph{heap graphs}
 or \emph{heap shapes}).
 An allocated memory heap cell corresponds to a node of graph and a pointer pointing from one memory cell
 to another is represented by the edges between nodes.
-The selectors are presented by the labels of the edges.
+The selectors are represented by the labels of the edges.
 Formally, a heap graph $G$ is a tuple $(V,E,\alpha)$ where $V$ is a set of nodes, $E \subseteq V \times V$ is
 a set of edges, $\alpha: E \rightarrow \selectors$ is a labelling function, and $\selectors$ is a set
 of selector names.
@@ -264,7 +265,7 @@ of selector names.
 	  program automatically but it needs to be parametrized manually by predicates to
 	  represent more complex data structures.
 	  The precision of the used abstraction by refinement was addressed in \cite{cav05, beyer:lazy_shape_analysis}.
-	  Scalability of the method has not been addressed.
+	  Scalability of the method has not been studied.
 
 	  \subsection{Separation Logic}
 
@@ -279,7 +280,7 @@ of selector names.
 
 	  While the assertions in Hoare logic consist of standard connectives and symbols of predicate logic,
 	  separation logic extends the framework with several new ones: $emp$ (representing
-	  the empty heap), $P*Q$ (saying that a heap can be splitted to two separated parts where one satisfies $P$ and the second $Q$),
+	  the empty heap), $P*Q$ (saying that the heap can be split to two separated parts where one satisfies $P$ and the second $Q$),
 	  $e \mapsto e'$ (an address defined by the expression $e$ is mapped to a value defined
 	  by the expression $e'$, and the rest of the heap is empty, i.e. $*emp$ is implicit),
 	  and $P\sepimp Q$ (states that a heap $h'$ satisfying the assertion $P$ will, after union with some heap $h$,
@@ -324,7 +325,7 @@ of selector names.
 	  The \emph{abstract regular model checking} \cite{artmc12} is an automata based method for verification of parametrized and infinite state systems.
 	  It employs automata over words and trees to represent the reachable configurations of system being verified
 	  and a regular transition relation (represented by transducer or operations over automata) to model the semantics of an analysed system.
-	  A (e.g., height or predicate language) abstraction is used to
+	  An (e.g., height or predicate language) abstraction is used to
 	  overapproximate the set of reachable configurations.
 	  The counterexample-guided refinement is applied to
 	  refine the abstraction and to validate the found counterexamples when needed.
@@ -361,7 +362,7 @@ of selector names.
 
 	  The approach was applied to verification of the C programs with dynamic data structures in
 	  the work on forest automata-based shape analysis \cite{forester12}.
-	  The tool Forester implementing the methods is able to verify complex data structures
+	  The \forester{} tool implementing the methods is able to verify complex data structures
 	  such as various tree and skiplists of the second and third level \cite{boxes13, holik:2017} which
 	  are not analysable by any other tool fully automatically.
 
@@ -371,7 +372,7 @@ of selector names.
 	  assumed that a used verification procedure will be sound.
 	  However, when the requirement on soundness is relaxed we will obtain a bug hunting method
 	  still able to detect many errors in program.
-	  One of such methods is \emph{bounded model checking (BMC)} which achieved many achievments
+	  One of such methods is \emph{bounded model checking (BMC)} which achieved many achievements
 	  in the various editions of the SV-COMP competition \cite{www:svcomp}.
 
 	  An exploration of state space is limited up to some bound in BMC.
@@ -491,7 +492,7 @@ of selector names.
 	work mainly with nondeterministic automata which provide more concise representation
 	of the analysed/verified systems.
 	A naive implementation of the crucial operations such language inclusion or equivalence checking
-	may lead to the explicit determinisation of an automaton which may cause an exponential
+	may lead to the explicit determinisation of an automaton causing an exponential
 	blow up of the number of the automaton states.
 	Particularly, language inclusion checking is an EXPTIME-complete operation
 	thus it is not possible to implement a generally efficient algorithm.
@@ -499,8 +500,8 @@ of selector names.
 	either based on so-called antichains \cite{ac:2006}, their combination with the simulation
 	relation \cite{tacas10}, or bisimulation up-to congruence \cite{bonchi2013}.
 	When building so-called product automaton from the automata under inclusion checking
-	all of the mentioned techniques do not continue in building the product automaton from
-	some product states which are not needed to be further explored to confirm or disprove that inclusion holds.
+	all of the mentioned techniques do not continue from some product states
+	which are not needed to be further explored to confirm or disprove that inclusion holds.
 	The approach based on antichains exists for word and tree automata \cite{tacas10} but the one based
 	on bisimulation up-to congruence is currently available only for classical word automata.
 
@@ -617,9 +618,9 @@ of selector names.
 \chapter{Goals of the Thesis}
 \label{ch:goals}
 	The main goal of this thesis is to improve the state of the art of shape analysis.
-	Moreover, some of the proposed methods that we intended to develop to achieve this goal
+	Moreover, some of the proposed methods that we intend to develop to achieve this goal
 	may yield new contributions to other fields than shape analysis as well.
-	The following section summarizes how we want to improvement the current state of shape analysis.
+	The following section summarizes how we want to improve the current state of shape analysis.
 
 	Currently, we see three main sub-goals of the main goal.
 	Each of sub-goals should be fulfilled during the work on the thesis, however,
@@ -650,10 +651,10 @@ of selector names.
 
 	In fact, this sub-goal has already been fulfilled and published in \cite{holik:2017}
 	and will be described deeply in Chapter \ref{ch:vmcai}.
-	The approach is based on CEGAR \cite{CEGAR} and will be inspired of the application of the CEGAR to ARTMC.
+	The approach is based on CEGAR \cite{CEGAR} and is inspired by the application of the CEGAR to ARTMC.
 	
 	As follows from the previous text, this approach enabled a reliable reporting of the found bugs
-	to an user for forest automata based shape analysis.
+	to a user for forest automata based shape analysis.
 	It also made possible to verify data structures with more sophisticated properties (based on
 	relations between the nodes) requiring a more precise abstraction to capture the property.
 
@@ -661,7 +662,7 @@ of selector names.
 	\label{section:autoalgs}
 	Although we want to design a new kind of automata as a part of this work,
 	many existing approaches (such as mentioned abstract regular tree model checking)
-	relies on tree automata.
+	relies on tree (or word) automata.
 	Therefore efficient algorithms for automata manipulation are needed.
 	In this work, we will focus on the efficiency of algorithms needed in formal verification
 	including language inclusion checking, reduction of automata states, or product of two automata.
@@ -685,15 +686,15 @@ of selector names.
 	experiences with this algorithm which we can further employ for the generalization to trees.
 
 	We will also aim to development of the new techniques for symbolic automata.
-	Symbolic automata have logical formulas in the predicate symbols instead of symbols.
-	It enables an efficient representation of the large, or even infinite alphabeths still having
+	Symbolic automata use logical formulas as the symbols.
+	It enables an efficient representation of the large, or even infinite alphabets still having
 	the nice algorithmic properties of the classical finite automata \cite{veanes2012}.
 	There is currently intensive research in this field and we suppose
 	that symbolic automata can also found an application in the field of shape analysis.
 	As the starting point, we began a development (in cooperation with one bachelor student)
 	of a library for symbolic automata.
 	The main goal of the library is to provide a platform for easy prototyping of the new algorithms
-	for symbolic automata which will be needed for further reasearch.
+	for symbolic automata what will be useful for further research.
 
 
 	\section{Automata on Graphs with Bounded Tree Width}
@@ -709,7 +710,7 @@ of selector names.
 	they are not closed under union, so one has to work with a set of forest automata instead
 	of one wrapping automaton.
 	A concept of hierarchical forest automata (forest automata having other forest automata as symbols)
-	may be theoretically tempting but it leads to not elegant and spaghetti implementation of
+	may be theoretically tempting but it leads to not elegant implementation of
 	the various needed operations over the automata.
 	For example, an implementation of many of the automata transformers corresponding to the concrete C
 	statements (such as the C function \emph{memset}) becomes quite cumbersome and not easy to design
@@ -723,7 +724,7 @@ of selector names.
 	to make modelling of practical operations semantics easy.
 
 	Although the mentioned implementation aspects are important for the practical applications
-	the main scientific contribution of the thesis will focus on efficient algorithms for the automata.
+	the main scientific contribution of the thesis will be a design efficient algorithms for a manipulation with the new automata.
 	The automata for accepting graphs introduced so far were mainly used for
 	the theoretical purposes as it was described in the chapter on the related work.
 	An interest put into an exploration of efficient heuristics and algorithms
@@ -1374,7 +1375,7 @@ of states $\states_1$, \dots, $\states_n$ are mutually disjoint, and $\asgn:
 \gvars \to \set{\rr{1}, \ldots , \rr{n}}$ is a~mapping of variables to
 root references.
 %
-A forest $\tuple{\trees, \asgnforest}$ over $\tuple{\abcd,\gvars}$ is
+A forest $\tuple{\trees,\\ \asgnforest}$ over $\tuple{\abcd,\gvars}$ is
 \emph{accepted} by $\fa$ iff $\asgnforest = \asgn$ and there are runs $\run_1, \dots, \run_n$ such that
 for all $1 \leq i \leq n$, $\run_i$ is a run of $\ta_i$ over $\tree_i$.
 %\begin{itemize}
@@ -1478,7 +1479,7 @@ A~transformation to the dense form is essential in the symbolic execution of a~p
 %a bounded number of cut-points even if the in-degree of them is unbounded as
 %e.g.~in SLLs with head/tail pointers (indeed there can be any number of
 %references from leaf nodes to a certain root).
-Forest automata, as defined in Sec.~\ref{sec:fa}, can represent heaps with
+Forest automata, as defined in Section~\ref{sec:fa}, can represent heaps with
 cut-points of an unbounded in-degree as,
 e.g.,~in singly-linked lists (SLLs) with head/tail pointers (indeed there can be any number of
 references from leaf nodes to a certain root).
@@ -1708,7 +1709,7 @@ These high-level operations
 %These four high-level operations (symbolic execution of program statements, 
 %normalization, folding, regular abstraction)
 are implemented as sequences of atomic operations and splitting.
-% which we discuss in detail in Sec.~\ref{sec:fwd_run}. %
+% which we discuss in detail in Section~\ref{sec:fwd_run}. %
 Atomic operations are functions of the type $\sop:\sconfs\partialto {\sconfs}$.
 %
 Splitting splits a~forest automaton $\fa$ into a set $\calS$ of forest automata such that $\semof\fa =\ourbigcup_{F' \in \calS} \semof{F'}$.
@@ -1756,7 +1757,7 @@ These two configurations cannot be represented using a~single forest automaton.
 %are not expressible by a single forest automaton.
 %
 %
-The symbolic execution explores the program's
+Symbolic execution explores the program's
 \emph{abstract reachability tree} (ART).
 %\tomas{Denote as abstract
 %reachability tree (ART), common in other works?}
@@ -1770,7 +1771,7 @@ The atomic operation corresponds to one of the following: symbolic execution of 
 a~program statement, generalization, or an auxiliary meta-operation that modifies
 the FAs while keeping its semantics (e.g., connects or cuts its components).
 Splitting appears in the tree as a~node with several children connected via edges labelled by a special operation $\splitting$. 
-The said operations are described in more detail in Sec.~\ref{sec:fwd_run}.
+The said operations are described in more detail in Section~\ref{sec:fwd_run}.
 %
 %There are two reasons why a node can have more than one child.
 %First, when there are more than one control flow edges leading from the control location.
@@ -1854,18 +1855,18 @@ the program is safe.
 
 The regular abstraction mentioned above is based on over-approximating sets
 of reachable configurations using some of the methods described later in
-Sec.~\ref{sec:abstraction}.
+Section~\ref{sec:abstraction}.
 The analysis starts with some initial abstraction function, which may, however,
 be too rough and introduce spurious counterexamples.
 The main contribution of the presented work is that we are able to analyse
 abstract counterexamples for spuriousness using the so-called \emph{backward run}
-(cf.~Sec.~\ref{sec:bwd_run}), and if the counterexamples are indeed
+(cf.~Section~\ref{sec:bwd_run}), and if the counterexamples are indeed
 spurious, we can \emph{refine} the abstraction used to avoid the given spurious error
 symbolic path, and continue with the analysis,
 potentially further repeating the analyse-refine steps.
 We will describe the backward run and abstraction refinement shortly in the
 following section and give a more thorough description in
-Sec.~\ref{sec:bwd_run} and~Sec.~\ref{sec:abstraction}.
+Section~\ref{sec:bwd_run} and~Section~\ref{sec:abstraction}.
 
 % Our refinement on abstraction is based on the framework of
 % \emph{counter-example guided abstraction refinement} (CEGAR)
@@ -1996,7 +1997,7 @@ In such a~case,
 an interpolant $\interp_i$ for $\fwrun$ can be obtained as $\bwsconf_{i+1}$ where $i+1$ is
 the smallest index such that $\semof{\bwsconf_{i+1}}\neq~\emptyset$. 
 %
-We elaborate on the implementation of the backward run in Sec.~\ref{sec:bwd_run}.
+We elaborate on the implementation of the backward run in Section~\ref{sec:bwd_run}.
 
 We note that our use of interpolants differs from that of McMillan
 \cite{mcmillanCAV03} in two aspects. First, due to the nature of our backward
@@ -2013,7 +2014,7 @@ It would also, however, be possible to use the sequence
 $\bwsconf_i,\ldots,\bwsconf_n$ as localized interpolants.
 
 
-In Sec.~\ref{sec:abstraction}, we show that
+In Section~\ref{sec:abstraction}, we show that
 using the interpolant $\interp_{i}$, 
 it is possible to refine regular abstraction $\sop_i$ (the only over-approximating operation)
 %into $\sop_i'$ 
@@ -2028,7 +2029,7 @@ following:\vspace*{-0.5mm}
 for any FA $\fa$ such that  
 %$\sconf$ is forest compatible with $\sconf_{i-1}$
 $\semof{\sconf}\subseteq\semof{\sconf_{i-1}}$ 
-that is compatible with $\sconf_{i-1}$ (as defined in Sec.~\ref{sec:intersection})
+that is compatible with $\sconf_{i-1}$ (as defined in Section~\ref{sec:intersection})
 it holds that
 $\semof{\sop_i(\sconf)} \cap \semof{\interp_i} = \emptyset$,
 %
@@ -2127,7 +2128,7 @@ That is, a pair $(a,b)$ that would be computed by a~classical product
 construction where $a$ or $b$ is a reference or a data value is replaced by~$a$
 if $a = b$, and removed otherwise.
 
-The above algorithm is, however, incomplete, i.e., it only guarantees $\semof{\fa\cap\fa'}\subseteq\semof\fa\cap~\semof{\fa'}$.
+The algorithm described above is, however, incomplete, i.e., it only guarantees $\semof{\fa\cap\fa'}\subseteq\semof\fa\cap~\semof{\fa'}$.
 %
 To increase the precision, we take into account the semantics of the boxes in
 the product construction, yielding a construction denoted using~$\isectfa$.
@@ -2546,9 +2547,9 @@ of the backward run.
 %
 Therefore, we will present the operations used in the forward run mainly from
 the point of view of their effect on the representation  of heaps (in the sense
-of Sec.~\ref{sec:intersection}).
+of Section~\ref{sec:intersection}).
 %
-Then, in Sec.~\ref{sec:bwd_run}, we will show how this effect is inverted in
+Then, in Section~\ref{sec:bwd_run}, we will show how this effect is inverted in
 the backward run such that, when starting from compatible
 configurations, the inverted operations preserve compatibility of the
 configurations in the backward run with their forward run counterparts.
@@ -2560,7 +2561,7 @@ configurations in the backward run with their forward run counterparts.
 %Now, we are finally ready to describe the operations used in the forward run.
 %We are now ready to describe the operations used in the forward run.
 %
-We omit most details of the way the operations are implementated on the level of manipulations with rules and states of FAs. 
+We omit most details of the way the operations are implemented on the level of manipulations with rules and states of FAs. 
 %We mostly omit their detailed implementation on the level of manipulations with
 %rules and states of FAs. 
 %since it is not important for this paper; instead,
@@ -2600,7 +2601,7 @@ replaced by references to~$\rr{j-1}$.
 
 %------------------------------------------------------------------------------
 \paragraph{Splitting.}
-Splitting has already been discussed in Sec.~\ref{sec:analysis}.
+Splitting has already been discussed in Section~\ref{sec:analysis}.
 It splits the symbolic execution into several branches such that the union of
 the FAs after the split is semantically equal to the original~FA.
 %
@@ -2988,13 +2989,13 @@ unreachable component and continues with the execution.
 %------------------------------------------------------------------------------
 \paragraph{Regular Abstraction.} 
 %Regular abstraction is implemented as one of the abstractions described in
-%Sec.~\ref{sec:abstraction}, which over-approximate the language of the
+%Section~\ref{sec:abstraction}, which over-approximate the language of the
 %individual components.
 %It is preceded by a~transformation to the dense form 
 %by connecting and splitting the FA.
 
 Regular abstraction is described in
-Sec.~\ref{sec:abstraction}.
+Section~\ref{sec:abstraction}.
 It is preceded by a~transformation to the dense form 
 by connecting and splitting the FA.
 
@@ -3004,8 +3005,8 @@ by connecting and splitting the FA.
 \vspace{-1.0mm}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We now present how we compute the weakest localized preconditions (\emph{inversions} for short) of the operations from Sec.~\ref{sec:fwd_run} in the backward run.
-As mentioned in  Sec.~\ref{sec:fwd_run}, 
+We now present how we compute the weakest localized preconditions (\emph{inversions} for short) of the operations from Section~\ref{sec:fwd_run} in the backward run.
+As mentioned in  Section~\ref{sec:fwd_run}, 
 it is crucial that compatibility with the forward run is preserved. 
 Let $\sconf_i = \sop(\sconf_{i-1})$ appear in the forward run and
 $\bwsconf_{i}$ be an already computed configuration in the backward run
@@ -3028,7 +3029,7 @@ use the fact that the places of connection are marked by the
 state~$q$ in the FA $\sconf_i$ from the forward run.
 %
 We use the tree automata product $\isectta$ from
-Sec.~\ref{sec:intersection}, which
+Section~\ref{sec:intersection}, which
 propagates the information about occurrences of $q$ to $\bwsconf_{i}$,
 to compute the product of the $k$-th
 component of $\sconf_{i}$ and the $k$-th component of~$\bwsconf_i$.
@@ -3056,7 +3057,7 @@ $\folding{n,S_{\iport},S_{\oport},\botox'}$ where the box $\botox'$ folded in
 the backward run might be semantically smaller than $\botox$ (since the
 backward run is returning with a subset of configurations of the forward run). 
 
-Regular abstraction is inverted using the intersection construction from Sec.~\ref{sec:intersection}. 
+Regular abstraction is inverted using the intersection construction from\ Section~\ref{sec:intersection}. 
 That is, if $\sop_i$ is a~regular abstraction, 
 then $\bwsconf_{i-1} = \bwsconf_{i} \isectfa\sconf_{i-1}$.
 
@@ -3075,7 +3076,7 @@ $\sconf_{i-1} = \tuple{\ta_1 \cdots \ta_n, \asgn}$ as follows:
 
   \item $\code{x := y\text{\texttt{->}}sel}$:
 Inversion is done by setting $\bar\asgn'(\code{x})$ to the value of
-$\asgn(\code{x})$ from~$\sconf_{i-1}$.
+$\asgn(\code{x})$ fr\-om~$\sconf_{i-1}$.
 % is set to the value it has in $\sconf_{i-1}$.
 %
 %We remember a value $a$ of
@@ -3107,7 +3108,7 @@ removed in the forward run, is inserted at the same position in $\bwsconf_{i}$, 
 $\bar\asgn'(\code{x})$ is set to that position.
 %
 Then we must invert the rewriting of root references pointing to $\asgn(\code{x})$ to $\asgnof{\undef}$ done by the forward run.
-For this, we compute the $\isectta$ forest automata product from Sec.~\ref{sec:intersection} with $\sconf_{i-1}$, but modified so that 
+For this, we compute the $\isectta$ forest automata product from Section~\ref{sec:intersection} with $\sconf_{i-1}$, but modified so that 
 instead of discarding reached pairs $(\asgnof\undef,\valuation(\code{x}))$, 
 it replaces them by $\valuation(\code{x})$.
 %
@@ -3138,7 +3139,7 @@ the marked root references to $\undef$ back to $\code{x}$.
 \vspace{-5.0mm}
 %------------------------------------------------------------------------------
 \paragraph{The role of compatibility in the backward run.}
-Inversions of regular abstraction, component connection, and $\code{free(x)}$, use the TA product construction~$\isectta$ from Sec.~\ref{sec:intersection}.
+Inversions of regular abstraction, component connection, and $\code{free(x)}$, use the TA product construction~$\isectta$ from Section~\ref{sec:intersection}.
 %
 The precision of all intersection and product computations in the backward run
 depends on the compatibility of the backward and forward run.
@@ -3385,7 +3386,7 @@ and every operation of connecting, cutting, and swapping of components.
 
 Now, we will formalize the notion of abstract regular model checking
 and the related height and predicate language abstraction mentioned in
-Section \ref{subsec:armc}.
+Section \ref{subsection:armc}.
 %
 Given a tree automaton $\ta=(Q, q_0, \Delta)$, its abstraction 
 %
@@ -3393,8 +3394,7 @@ Given a tree automaton $\ta=(Q, q_0, \Delta)$, its abstraction
 %
 % using $\abstra$
 %
-is the TA
-$\abstraof \ta =( Q/_{\eqrel},[q_0]_{\eqrel{}},\Delta_{\eqrel{}} )$
+is TA $\abstraof \ta =( Q/_{\eqrel},[q_0]_{\eqrel{}},\Delta_{\eqrel{}} )$
 where $\eqrel$ is an equivalence relation on $Q$, $Q/_{\eqrel}$ is the set of
 $\eqrel$'s equivalence classes, $[q_0]_{\eqrel{}}$ denotes the equivalence class
 of $q_0$,  and $\Delta_{\eqrel{}}$ arises from $\Delta$ by replacing
@@ -3485,7 +3485,7 @@ we define $\abstraof \fa = \tuple{\abstraof{\ta_1}\cdots\abstraof{A_n},\asgn}$.
 %
 Additionally, in the case of predicate abstraction,
 which uses automata intersection to annotate states by predicate languages,
-we use the intersection operator $\isectfa$ from Sec.~\ref{sec:intersection},
+we use the intersection operator $\isectfa$ from Section~\ref{sec:intersection},
 which descends recursively into boxes, and it is thus more precise from the point
 of view of the semantics of FAs.
 %
@@ -3541,7 +3541,7 @@ It can be refined by adding new predicates to $\predset$ and it gives strong gua
 %When the new predicates are extracted as interpolants from spurious counterexample runs of the abstract computation, it gives strong guarantees about   
 %about excluding the spurious counterexamples. 
 %
-In ARTMC, interpolants in the form of tree automata $\interp_i$ are extracted from spurious counterexamples in the way described in Sec.~\ref{sec:CEXanalysis}.
+In ARTMC, interpolants in the form of tree automata $\interp_i$ are extracted from spurious counterexamples in the way described in Section~\ref{sec:CEXanalysis}.
 %
 The interpolant is then used to refine the abstraction so that the spurious run is excluded from the program's ART.
 %It represents a set of configurations introduced by abstraction due to which an error is reached by a spurious forward run. The refinement is then used to exclude the spurious run. 
@@ -3589,7 +3589,7 @@ $\predset({A_i})$ only where $A_i$ is the $i$-th component of $\interp$ and $\la
 %% represented by the FA $I_i=(B_1,\dots,B_n,\portoff{})$ computed by the backward run
 %% (cf.\ Sec \ref{sec:CEXanalysis}).  Note that $F_i$  and $I_i$ are box-compatible and component
 %% compatible 
-%% (c.f. Sec.\ \ref{sec:fwd_run}).
+%% (c.f. Section\ \ref{sec:fwd_run}).
 %% 
 %% %Then new set of predicates $\predset'$ is
 %% %defined as $\predset' = \predset \cup \bigcup_{0<i\leq n} \{(Q_i,q,\Delta_i)
@@ -3621,7 +3621,7 @@ $\predset({A_i})$ only where $A_i$ is the $i$-th component of $\interp$ and $\la
 %\end{lemma}
 
 %% \proof{$F_i$ and $I_i$ are box-compatible and component compatible.
-%% Due to the component compatibility, the relation $\isbij$ computed within the intersection (c.f. Sec. \ref{sec:isect_alg}) 
+%% Due to the component compatibility, the relation $\isbij$ computed within the intersection (c.f. Section \ref{sec:isect_alg}) 
 %% is equal to identity and
 %% the intersection between these FAs is simply
 %% performed component-wise. The fact that 
@@ -3635,7 +3635,7 @@ $\predset({A_i})$ only where $A_i$ is the $i$-th component of $\interp$ and $\la
 
 %Note that  predicate language abstraction  
 %can be simply employed for nested box-compatible FAs. One just have to replace the ordinary TA
-%intersection inside the predicate labeling by the nested intersection defined in  Sec.
+%intersection inside the predicate labeling by the nested intersection defined in  Section
 %\ref{sec:isect_alg}. The lemma \ref{lemma:pred-refinement} will stay valid for nested FAs.
 
 
@@ -3674,6 +3674,7 @@ detail in App.~\ref{sec:testcases}.
 	\centering
 	\scriptsize
 	\caption{Results of experiments.}
+	\makebox[\linewidth]{
 	\begin{tabular}{| l | l | r | r | r | r || l | l | r | r | r | r | r |}
         \hline
 		Program & Status & LoC & Time [s] & Refnm& Preds & Program & Status & LoC & Time [s] & Refnm & Preds \\
@@ -3735,6 +3736,7 @@ detail in App.~\ref{sec:testcases}.
 		% SkipList-3nd    & $97$ & $0.17$  & $1$  & N & x & $1$ & & & & & & & \\
         % \hline
 	\end{tabular}
+	}
 	\label{tab:times}
   % \vspace{-4mm}
   % \vspace{-8mm}
@@ -3866,26 +3868,26 @@ individual ones as the symbolic representation of sets of heaps.
 
 The goal of this thesis is to enhance the existing techniques for shape analysis to
 enable verification of more complex software.
-Particularly, we aim to development the following advancement:
+To achieve the main goal, we set the following three sub-goals:
 	  \begin{enumerate*}[label=(\alph*)]
-		\item design techniques for counterexample validation and refinement
-			of predicate language abstraction over forest automata,
-		\item design new automata for accepting graphs with bounded tree width,
-		\item design new efficient algorithms for (tree) automata manipulation.
+		\item to design techniques for counterexample validation and refinement
+			of predicate languages abstraction over forest automata,
+		\item to design new automata for accepting graphs with bounded tree width,
+		\item to design new efficient algorithms for (tree) automata manipulation.
 	  \end{enumerate*}
 The report also provided a description of the related work containing
 the state of the art techniques in the scope of the mentioned goals.
 
 Since the first goals has already been achieved, a more detailed
-description was given based on the paper \cite{holik:2017}.
-The results achieved in \cite{forester12} haven been implemented (in several years)
-in the Forester tool and helps in participation in the last three editions
-of SV-COMP \cite{www:svcomp} in the memory safety related categories.
+description (based on the paper \cite{holik:2017}) was given.
+The techniques from the paper were implemented in the \forester\ tool.
+The tool is based on the results achieved in \cite{forester12}.
+It participated in the last three editions of SV-COMP \cite{www:svcomp} in the memory safety related categories.
 Although the tool has not won any category, it successfully solved the hard
 test cases such as the skip-lists of the second and the third level, or verification
 of data structures with properties which have not been soundly and automatically verified by
 any other tool.
-There are three publications related to the Forester participations in the competition
+There are three publications related to the \forester{} participations in the competition
 co-authored by the author of the proposed thesis \cite{tacas15, tacas16, tacas17}.
 
 The remaining work of the proposed thesis consists of the second and the third sub-goal.
@@ -3909,7 +3911,7 @@ of algorithms for symbolic automata.
 \chapter{Description of the Test Cases}\label{sec:testcases}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-This section describes the test cases used in the experimental evaluation in Sec.~\ref{sec:exps}.
+This section describes the test cases used in the experimental evaluation in Section~\ref{sec:exps}.
 % The list data structures in all examples have a pointer called \emph{next} pointing
 % to the next node in the linked list.
 Note that we use a limited set of integer values since we do not support
